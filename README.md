@@ -230,6 +230,38 @@ Please reach out via **[GitHub](https://github.com/AIMLDS7)** or email.
 
 ---
 
+
+## 📊 Visual Gallery
+
+### Dashboard_Mcclear
+
+![Dashboard_Mcclear](images/Dashboard_Mcclear.jpg)
+
+---
+
+### sensor+mcclear+ineichen_1day
+
+
+![sensor+mcclear+ineichen_1day](images/sensor+mcclear+ineichen_1day.jpg)
+
+
+---
+
+### sensor+mcclear
+
+![sensor+mcclear](images/sensor+mcclear.jpg)
+
+
+---
+
+### sensor+mcclear+ineichen
+
+
+![sensor+mcclear+ineichen](images/sensor+mcclear+ineichen.jpg)
+
+
+---
+
 ## 🗺️ Roadmap
 
 - [ ] Scheduled, automated FTP sync (cron / Task Scheduler) with retry handling
