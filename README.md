@@ -22,7 +22,6 @@ The system was developed to support **data quality assurance and irradiance benc
 
 Built with a strong focus on **engineering reliability**: robust parsing of heterogeneous European-format log files, defensive handling of missing/zero sensor readings, automated data-availability auditing, and print-grade (A3) export pipelines suitable for technical reporting.
 
-
 ---
 
 ## 📊 Visual Gallery (Dashboard screenshots)
@@ -38,24 +37,6 @@ Built with a strong focus on **engineering reliability**: robust parsing of hete
 |:---:|:---:|
 | ![Weekly data chunking with configurable window size](images/sensor+mcclear+ineichen.jpg) | ![Selected date measurement period overview across all sensor groups](images/sensor+mcclear.jpg) |
 | *Configurable weekly chunking for long time-series inspection* | *Selected date measurement span with data-quality shading* |
-
----
-
-## 📑 Table of Contents
-
-- [Key Features](#-key-features)
-- [System Architecture](#-system-architecture)
-- [Data Pipeline](#-data-pipeline)
-- [Tech Stack](#-tech-stack)
-- [Repository Structure](#-repository-structure)
-- [Getting Started](#-getting-started)
-- [Usage Walkthrough](#-usage-walkthrough)
-- [Data Privacy & GDPR Compliance](#-data-privacy--gdpr-compliance)
-- [Code Availability](#-code-availability)
-- [Roadmap](#-roadmap)
-- [Author](#-author)
-- [License](#-license)
-
 
 ---
 
@@ -156,7 +137,7 @@ weather-station-analytics/
 
 ### PNG exports (150 dpi / 300 dpi)
 
-| Dashboard — 1-day irradiance (screen, 150 dpi) | A3 print layout (300 dpi) |
+| Dashboard — Full Month irradiance (screen, 300 dpi) | A3 print layout (300 dpi) |
 |:---:|:---:|
 | ![Sample PNG export — irradiance dashboard 1-day view](exports/PNG/Monthly_Graph_A3HighRes_01_Aug_25_to_31_Aug_25.png) | ![Sample A3 PDF export rendered as PNG preview](exports/PNG/Monthly_Graph_A3HighRes_01_Jul_25_to_31_Jul_25.png) |
 | *Exported via Kaleido at 1920 × 1080 px* | *A3 landscape, 300 dpi, ready for direct printing* |
@@ -305,10 +286,8 @@ Energy Systems Modelling · BESS Analytics · EPC Commercial Management
 
 This repository (documentation, structure, and visual assets) is shared for portfolio and demonstration purposes. The underlying implementation is proprietary — see [Code Availability](#-code-availability) for licensing and collaboration inquiries.
 
+---
 
 <div align="center">
   <sub>Built with pvlib · plotly · ipywidgets · kaleido · pandas</sub>
 </div>
-
----
-
