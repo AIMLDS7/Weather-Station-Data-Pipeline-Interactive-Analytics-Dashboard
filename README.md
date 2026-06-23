@@ -1,6 +1,6 @@
 <div align="center">
 
-# 🌦️ Weather Station Data Pipeline & Interactive Analytics Dashboard
+<img src="https://capsule-render.vercel.app/api?type=waving&color=0:0f0c29,50:302b63,100:24243e&height=200&section=header&text=🌦️%20Weather%20Station%20Data%20Pipeline%20&%20Interactive%20Analytics%20Dashboard&fontSize=34&fontColor=ffffff&fontAlignY=38&desc=XGBoost%20%2B%20LSTM%20%7C%20Day-Ahead%20Electricity%20Market%20Intelligence&descAlignY=60&descSize=16" width="100%"/>
 
 **End-to-end ingestion, correction, and visualization platform for multi-station meteorological monitoring networks**
 
@@ -10,6 +10,8 @@
 ![pvlib](https://img.shields.io/badge/Solar%20Modelling-pvlib-orange)
 ![Status](https://img.shields.io/badge/Status-Active-success)
 ![License](https://img.shields.io/badge/Code-Available%20on%20Request-lightgrey)
+
+<div align="center">
 
 </div>
 
