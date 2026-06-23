@@ -1,4 +1,4 @@
-<div align="center">
+<div>
 
 <img src="https://capsule-render.vercel.app/api?type=waving&color=0:0f0c29,50:302b63,100:24243e&height=200&section=header&text=🌦️%20Weather%20Station%20Data%20Pipeline%20&%20Interactive%20Analytics%20Dashboard&fontSize=34&fontColor=ffffff&fontAlignY=38&desc=End-to-end%20%2B%20ingestion,%20correction,%20and%20visualization%20platform%20for%20multi-station%20meteorological%20monitoring%20networks&descAlignY=60&descSize=16" width="100%"/>
 
