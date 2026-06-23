@@ -9,7 +9,7 @@
 ![Status](https://img.shields.io/badge/Status-Active-success)
 ![License](https://img.shields.io/badge/Code-Available%20on%20Request-lightgrey)
 
-<div align="center">
+<div>
 
 ---
 
