@@ -21,6 +21,39 @@ The system was developed to support **data quality assurance and irradiance benc
 
 Built with a strong focus on **engineering reliability**: robust parsing of heterogeneous European-format log files, defensive handling of missing/zero sensor readings, automated data-availability auditing, and print-grade (A3) export pipelines suitable for technical reporting.
 
+
+---
+
+## 📊 Visual Gallery
+
+### Dashboard_Mcclear
+
+![Dashboard_Mcclear](images/Dashboard_Mcclear.jpg)
+
+---
+
+### sensor+mcclear+ineichen_1day
+
+
+![sensor+mcclear+ineichen_1day](images/sensor+mcclear+ineichen_1day.jpg)
+
+
+---
+
+### sensor+mcclear
+
+![sensor+mcclear](images/sensor+mcclear.jpg)
+
+
+---
+
+### sensor+mcclear+ineichen
+
+
+![sensor+mcclear+ineichen](images/sensor+mcclear+ineichen.jpg)
+
+
+
 ---
 
 ## 📑 Table of Contents
@@ -225,38 +258,6 @@ It can be shared on request for:
 - 🔍 Independent verification of methodology
 
 Please reach out via **[GitHub](https://github.com/AIMLDS7)** or email.
-
----
-
-
-## 📊 Visual Gallery
-
-### Dashboard_Mcclear
-
-![Dashboard_Mcclear](images/Dashboard_Mcclear.jpg)
-
----
-
-### sensor+mcclear+ineichen_1day
-
-
-![sensor+mcclear+ineichen_1day](images/sensor+mcclear+ineichen_1day.jpg)
-
-
----
-
-### sensor+mcclear
-
-![sensor+mcclear](images/sensor+mcclear.jpg)
-
-
----
-
-### sensor+mcclear+ineichen
-
-
-![sensor+mcclear+ineichen](images/sensor+mcclear+ineichen.jpg)
-
 
 ---
 
