@@ -2,14 +2,15 @@
 
 <img src="https://capsule-render.vercel.app/api?type=waving&color=0:0f0c29,50:302b63,100:24243e&height=200&section=header&text=🌦️%20Weather%20Station%20Data%20Pipeline%20&%20Interactive%20Analytics%20Dashboard&fontSize=34&fontColor=ffffff&fontAlignY=38&desc=End-to-end%20%2B%20ingestion,%20correction,%20and%20visualization%20platform%20for%20multi-station%20meteorological%20monitoring%20networks&descAlignY=60&descSize=16" width="100%"/>
 
-![Python](https://img.shields.io/badge/Python-3.9%2B-3776AB?logo=python&logoColor=white)
-![Plotly](https://img.shields.io/badge/Visualization-Plotly-3f4f75?logo=plotly&logoColor=white)
-![Jupyter](https://img.shields.io/badge/Notebook-Jupyter-F37626?logo=jupyter&logoColor=white)
-![pvlib](https://img.shields.io/badge/Solar%20Modelling-pvlib-orange)
-![Status](https://img.shields.io/badge/Status-Active-success)
-![License](https://img.shields.io/badge/Code-Available%20on%20Request-lightgrey)
+[![Python](https://img.shields.io/badge/Python-3.9%2B-3776AB?style=flat-square&logo=python&logoColor=white)](https://www.python.org/)
+[![pvlib](https://img.shields.io/badge/pvlib-0.10%2B-orange?style=flat-square)](https://pvlib-python.readthedocs.io/)
+[![Plotly](https://img.shields.io/badge/Plotly-5.x-3F4F75?style=flat-square&logo=plotly&logoColor=white)](https://plotly.com/python/)
+[![Jupyter](https://img.shields.io/badge/Jupyter-Notebook-F37626?style=flat-square&logo=jupyter&logoColor=white)](https://jupyter.org/)
+[![License: CC BY-NC 4.0](https://img.shields.io/badge/License-CC%20BY--NC%204.0-lightgrey.svg?style=flat-square)](LICENSE)
+[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg?style=flat-square)](https://github.com/psf/black)
+[![Status](https://img.shields.io/badge/status-active-success.svg?style=flat-square)]()
 
-<div>
+</div>
 
 ---
 
@@ -24,33 +25,20 @@ Built with a strong focus on **engineering reliability**: robust parsing of hete
 
 ---
 
-## 📊 Visual Gallery
+## 📊 Visual Gallery (Dashboard screenshots)
 
-### Dashboard_Mcclear
+> **Showing what's here:** the gallery below covers the primary dashboard views. Exports from the pipeline are shown in the [Exports showcase](#exports-showcase) section.
 
-![Dashboard_Mcclear](images/Dashboard_Mcclear.jpg)
+| McClear clear-sky overlay — 1-day view | Multi-sensor group comparison |
+|:---:|:---:|
+| ![McClear 1-day view showing GHI sensor vs satellite clear-sky model](images/sensor+mcclear+ineichen_1day.jpg) | ![Sensor group comparison with checkbox-filtered channels](images/Dashboard_Mcclear.jpg) |
+| *Measured GHI vs McClear satellite model and Ineichen physical model, with unified hover cursor* | *Multi-group checkbox selector — toggle sensor channels independently* |
 
----
+| Weekly chunked view | Selected date-range overview |
+|:---:|:---:|
+| ![Weekly data chunking with configurable window size](images/sensor+mcclear+ineichen.jpg) | ![Selected date measurement period overview across all sensor groups](images/sensor+mcclear.jpg) |
+| *Configurable weekly chunking for long time-series inspection* | *Selected date measurement span with data-quality shading* |
 
-### sensor+mcclear+ineichen_1day
-
-
-![sensor+mcclear+ineichen_1day](images/sensor+mcclear+ineichen_1day.jpg)
-
-
----
-
-### sensor+mcclear
-
-![sensor+mcclear](images/sensor+mcclear.jpg)
-
-
----
-
-### sensor+mcclear+ineichen
-
-
-![sensor+mcclear+ineichen](images/sensor+mcclear+ineichen.jpg)
 
 
 
