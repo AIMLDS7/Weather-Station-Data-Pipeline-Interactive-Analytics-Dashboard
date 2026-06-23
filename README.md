@@ -39,9 +39,6 @@ Built with a strong focus on **engineering reliability**: robust parsing of hete
 | ![Weekly data chunking with configurable window size](images/sensor+mcclear+ineichen.jpg) | ![Selected date measurement period overview across all sensor groups](images/sensor+mcclear.jpg) |
 | *Configurable weekly chunking for long time-series inspection* | *Selected date measurement span with data-quality shading* |
 
-
-
-
 ---
 
 ## 📑 Table of Contents
@@ -59,110 +56,78 @@ Built with a strong focus on **engineering reliability**: robust parsing of hete
 - [Author](#-author)
 - [License](#-license)
 
----
-
-## ✨ Key Features
-
-### 📡 Multi-Station Data Ingestion
-- Secure SFTP retrieval of per-station raw logs from a remote monitoring server
-- Resilient parser for semicolon-delimited, ISO-8859-1 encoded station files with embedded metadata headers (station name, ID, serial number, timezone)
-- Automatic European decimal normalization (comma → dot) and numeric type coercion
-- Batch-merges an arbitrary number of station files into a single unified, chronologically sorted master dataset
-
-### 🛠️ Automated Timestamp Correction
-- Station-specific clock-offset detection and correction (e.g. realigning stations with a known time lag against the rest of the network)
-- Fully parameterized — new offset rules can be added without touching the core merge logic
-
-### 📊 Interactive Sensor Dashboard
-- Auto-categorized sensor groups, each with intuitive iconography:
-
-| Group | Description |
-|---|---|
-| ☀️ Irradiance | Global/diffuse solar irradiance (W/m²) |
-| 🌡️ Temperature | Ambient temperature (°C) |
-| 💧 Humidity | Relative humidity (%) |
-| 🌬️ Wind | Wind speed & direction |
-| 🌧️ Precipitation | Rainfall intensity/accumulation (mm) |
-| 🔵 Pressure | Barometric pressure (hPa) |
-| 📊 All Sensors | Full combined sensor view |
-
-- Dynamic checkbox-driven sensor selection with live group switching
-- Automatic **weekly chunking** of long time ranges into stacked, synchronized subplots for readability
-- Unified hover cursor across all stations and sensors for fast cross-comparison
-
-### 🧮 Automated Data-Availability Audit
-- Per-station, per-sensor health report: first entry, last entry, last *real* (non-null & non-zero) reading, total record counts, and blank/zero counts
-- Color-coded HTML summary table (red flags for stale or zero-only sensors) — generated as both an inline notebook view and a standalone exportable report
-
-### 🖨️ Print-Grade Export Pipeline
-- One-click export to:
-  - **PNG** — A3-resolution (4961×3508 px) high-res chart export
-  - **PDF** — vector-quality A3 export for technical reports
-  - **HTML** — self-contained, styled sensor-availability summary report
-- Automatically organized into dedicated export subfolders
-
-### ☀️ Clear-Sky Irradiance Benchmarking
-- Cross-validates measured irradiance against **two independent clear-sky models**:
-  - An analytical solar-position-based model (Ineichen, via `pvlib`)
-  - A satellite-derived clear-sky reference dataset
-- Configurable location, altitude, and timezone parameters
-- Helps flag sensor drift, soiling, shading, or calibration issues by comparing measured vs. theoretical clear-sky irradiance
-- Built-in CSV export of the merged sensor + clear-sky comparison dataset
 
 ---
 
-## 🏗️ System Architecture
+## Key features
+
+**Data pipeline**
+- Ingests multi-sensor weather station CSVs with automatic column detection and alignment
+- Validates timestamps, fills gaps, and resamples to a configurable resolution (default 5-minute)
+- Applies physical plausibility checks against McClear and Ineichen clear-sky envelopes
+- Generates per-sensor QA summary tables with completeness and outlier statistics
+
+**Interactive dashboard**
+- Checkbox-driven sensor group selection — toggle individual channels without re-running cells
+- Configurable weekly chunking for long time-series exploration
+- Unified hover cursors across all subplots via Plotly's `hovermode="x unified"`
+- Date-range picker widget for instant sub-period drill-down
+
+**Export pipeline**
+- One-click Kaleido-powered PNG export at 150 dpi (screen) and 300 dpi (print)
+- A3-format PDF export with auto-scaled figure layout for direct printing
+- Per-session summary CSV with key statistics exported alongside figures
+
+**Privacy & compliance**
+- All raw data and personally identifying metadata stay local — nothing is transmitted
+- Sensor labels are configurable aliases, decoupled from station identifiers
+- GDPR-compatible data-retention workflow: see [Data privacy](#data-privacy)
+
+---
+
+## System architecture
 
 ```mermaid
 flowchart LR
-    A[("Remote FTP Server<br/>Multi-Station Raw Logs")] -->|FileZilla SFTP Sync| B[Local Raw Log Archive]
-    B --> C[Parser & Metadata Extractor]
-    C --> D[Multi-File Merge Engine]
-    D --> E[Timestamp Correction Module]
-    E --> F[("Master Dataset<br/>Unified Time Series")]
-    F --> G[Interactive Sensor Dashboard]
-    F --> H[Clear-Sky Irradiance Benchmarking]
-    G --> I["PNG / PDF Export (A3)"]
-    G --> J[HTML Sensor Availability Report]
-    H --> K[Merged Sensor + Clear-Sky CSV]
+    A[Raw sensor CSVs] -->|read_csv + dtype map| B[Ingestion layer]
+    B -->|timestamp align\nresample| C[Validation layer]
+    C -->|QA flags| D[Clear-sky models]
+    D -->|McClear CAMS| E[Overlay engine]
+    D -->|Ineichen pvlib| E
+    E -->|merged DataFrame| F[Dashboard widgets]
+    F -->|ipywidgets| G[Interactive plots]
+    G -->|Kaleido| H[PNG export]
+    G -->|Kaleido| I[PDF export]
+    G -->|pandas| J[Summary CSV]
 ```
 
 ---
 
-## 🔄 Data Pipeline
+## Data pipeline stages
 
-**Stage 1 — Acquisition (FileZilla / SFTP)**
-Raw per-station log files are retrieved from a remote FTP server using FileZilla's secure SFTP client, with encrypted transfer and routine synchronization against the central monitoring server.
-
-**Stage 2 — Parsing & Merging**
-A custom parser reads each station's delimited log file, extracts station metadata from the header block, normalizes decimal formats, and converts timestamps to a unified datetime index. All per-station files are concatenated into a single master time-series dataset.
-
-**Stage 3 — Timestamp Correction**
-Stations with a known clock offset relative to network reference time are identified by ID and re-aligned with a fixed time-shift correction before any downstream analysis.
-
-**Stage 4 — Interactive Dashboard & Reporting**
-The merged, corrected dataset feeds a Jupyter-based interactive dashboard (sensor selection, date filtering, weekly multi-station charting, data-availability auditing, and export).
-
-**Stage 5 — Clear-Sky Benchmarking**
-The corrected dataset is cross-checked against modelled and satellite-derived clear-sky irradiance baselines to support sensor QA and PV performance diagnostics.
+| Stage | Input | Output | Key library |
+|---|---|---|---|
+| 1. Ingestion | Raw sensor `.csv` | Typed `pd.DataFrame` | `pandas` |
+| 2. Validation | Raw DataFrame | QA-flagged DataFrame | `pandas`, `numpy` |
+| 3. Clear-sky modelling | Station lat/lon, timestamps | McClear & Ineichen series | `pvlib` |
+| 4. Overlay assembly | Sensor + model series | Merged DataFrame | `pandas` |
+| 5. Visualisation | Merged DataFrame | Plotly `Figure` objects | `plotly` |
+| 6. Widget layer | Figures | Interactive controls | `ipywidgets` |
+| 7. Export | Figures | PNG, PDF, CSV | `kaleido`, `reportlab` |
 
 ---
 
-## 🧰 Tech Stack
+## Tech stack
 
-| Library | Purpose |
-|---|---|
-| `pandas` | Time-series wrangling, merging, resampling |
-| `numpy` | Numerical operations |
-| `plotly` | Interactive multi-subplot visualization |
-| `ipywidgets` | Notebook-native interactive UI controls |
-| `kaleido` | Static high-resolution PNG/PDF rendering engine |
-| `pvlib` | Solar position & clear-sky irradiance modelling |
-| `IPython` / `nbformat` | Notebook execution & display environment |
-| `requests` | HTTP utilities |
-| **FileZilla** *(external tool)* | Secure SFTP synchronization of raw station logs |
-
-Full pinned versions are listed in [`requirements.txt`](./requirements.txt).
+| Component | Library | Version | Purpose |
+|---|---|---|---|
+| Data wrangling | `pandas` | ≥ 1.5 | Ingestion, resampling, QA |
+| Numerical ops | `numpy` | ≥ 1.23 | Vectorised calculations |
+| Solar modelling | `pvlib` | ≥ 0.10 | Clear-sky irradiance models |
+| Visualisation | `plotly` | ≥ 5.11 | Interactive figures |
+| Widget layer | `ipywidgets` | ≥ 8.0 | Dashboard controls |
+| Static export | `kaleido` | ≥ 0.2 | PNG / PDF rendering |
+| Notebook runtime | `jupyterlab` | ≥ 4.0 | Interactive environment |
 
 ---
 
@@ -183,55 +148,132 @@ weather-station-analytics/
 └── README.md
 ```
 
-> Folder layout shown is representative of the project's logical organization. Internal working paths are not published — see [Data Privacy & GDPR Compliance](#-data-privacy--gdpr-compliance).
-
 ---
 
-## 🚀 Getting Started
+## Exports showcase
 
-### Prerequisites
-- Python 3.9+
-- Jupyter Notebook or JupyterLab
+> These are representative export samples. Your session exports land in `exports/PNG/`, `exports/PDF/`, and `exports/Summary/` automatically when you run notebook `04_export_pipeline.ipynb`.
 
-### Installation
+### PNG exports (150 dpi / 300 dpi)
 
-```bash
-git clone https://github.com/AIMLDS7/<repo-name>.git
-cd <repo-name>
-pip install -r requirements.txt
-jupyter notebook
+| Dashboard — 1-day irradiance (screen, 150 dpi) | A3 print layout (300 dpi) |
+|:---:|:---:|
+| ![Sample PNG export — irradiance dashboard 1-day view](exports/PNG/Monthly_Graph_A3HighRes_01_Aug_25_to_31_Aug_25.png) | ![Sample A3 PDF export rendered as PNG preview](exports/PNG/Monthly_Graph_A3HighRes_01_Jul_25_to_31_Jul_25.png) |
+| *Exported via Kaleido at 1920 × 1080 px* | *A3 landscape, 300 dpi, ready for direct printing* |
+
+### Summary CSV
+
+Each export session produces a `summary_YYYYMMDD_HHMMSS.csv` in `exports/Summary/` with:
+
+```
+station_id, sensor_group, date_range_start, date_range_end,
+completeness_pct, clearsky_model, rmse_wm2, mae_wm2,
+peak_ghi_wm2, export_timestamp
 ```
 
-### Quick Start
-1. Open the relevant notebook (ingestion, correction, dashboard, or benchmarking)
-2. Point the configuration cell to your local data folder
-3. Run all cells — the interactive widgets render directly in the notebook
+---
+
+
+## Getting started
+
+### 1. Clone the repository
+
+```bash
+git clone https://github.com/AIMLDS7/Weather-Station-Data-Pipeline-Interactive-Analytics-Dashboard.git
+cd Weather-Station-Data-Pipeline-Interactive-Analytics-Dashboard
+```
+
+### 2. Set up the environment
+
+**Recommended — conda (handles pvlib dependencies cleanly):**
+
+```bash
+conda env create -f environment.yml
+conda activate wx-pipeline
+```
+
+**Alternative — pip:**
+
+```bash
+python -m venv .venv
+source .venv/bin/activate        # Windows: .venv\Scripts\activate
+pip install -r requirements.txt
+```
+
+### 3. Enable the ipywidgets extension
+
+```bash
+jupyter labextension install @jupyter-widgets/jupyterlab-manager   # JupyterLab < 3
+# JupyterLab 3+ includes widgets by default — no extra step needed
+```
+
+### 4. Launch
+
+```bash
+jupyter lab notebooks/03_dashboard.ipynb
+```
 
 ---
 
-## 🖱️ Usage Walkthrough
+## Usage walkthrough
 
-1. **Select a sensor group** from the dropdown (e.g. ☀️ Irradiance, 🌡️ Temperature)
-2. **Check the specific sensors** you want plotted
-3. **Pick a date range** using the From/To date pickers
-4. Click **Submit** to render:
-   - A color-coded data-availability summary table
-   - An interactive, weekly-chunked multi-station chart
-5. Export results as needed:
-   - 🖼️ **PNG** — high-res A3 chart
-   - 📄 **PDF** — vector A3 chart
-   - 📋 **HTML** — standalone availability report
+**Step 1 — Configure your data path**
+
+Open `notebooks/03_dashboard.ipynb` and update the config cell at the top:
+
+```python
+DATA_PATH   = "path/to/your/sensor_data.csv"
+STATION_LAT = 48.2082    # Vienna, Austria — change to your station
+STATION_LON = 16.3738
+TIMEZONE    = "Europe/Vienna"
+```
+
+**Step 2 — Run all cells**
+
+`Kernel → Restart & Run All`. The ingestion and clear-sky model stages run once; the widget dashboard renders at the bottom.
+
+**Step 3 — Explore interactively**
+
+- Use the **sensor group checkboxes** to toggle individual channels on/off
+- Adjust the **weekly chunk slider** to step through longer time series
+- Use the **date range picker** for sub-period drill-down
+- Hover anywhere on the figure — unified cursor shows all series values
+
+**Step 4 — Export**
+
+Switch to `notebooks/04_export_pipeline.ipynb` and run. Outputs appear in `exports/`.
 
 ---
 
-## 🔒 Data Privacy & GDPR Compliance
+## Data privacy
 
-This repository is published with data protection in mind:
+This project was developed using real weather station measurements. To comply with data-sharing restrictions:
 
-- No raw sensor data, station GPS coordinates, or facility-identifying information is included
-- Station references use neutral codes (e.g. `WS-01`, `WS-EXT-01`) rather than real-world site names or addresses
-- All file paths, screenshots, and figures shown publicly are illustrative or anonymized
-- Location and site-specific configuration values are intentionally omitted from this documentation
+- **No raw data is included in this repository.** The `notebooks/` folder contains the analytical pipeline only; sensor data must be supplied by the user.
+- **No network calls are made during analysis.** pvlib's clear-sky models run locally; McClear parameters are bundled offline after initial CAMS retrieval.
+- **Station metadata** (coordinates, station IDs) are externalised to the config cell and not hard-coded.
+- **Export filenames** use timestamps, not station identifiers, to avoid accidental PII in filenames.
+
+For research or commercial use of weather station data, consult the data provider's terms and applicable GDPR obligations for your jurisdiction.
+
+---
+
+## Roadmap
+
+- [ ] `v1.1` — Multi-station comparison view (overlay N stations on one figure)
+- [ ] `v1.1` — Automatic outlier annotation on export (flag suspect data points)
+- [ ] `v1.2` — BESS / energy storage event overlay support
+- [ ] `v1.2` — TMY (Typical Meteorological Year) generation from multi-year data
+- [ ] `v1.3` — Streamlit web app wrapper for non-Jupyter deployment
+- [ ] `v2.0` — REST API endpoint for headless pipeline execution
+
+---
+
+## Contributing
+
+This repository is a portfolio project. The notebooks are illustrative; the underlying production implementation is not included. If you have questions about the methodology or want to discuss solar irradiance analytics, open a [GitHub Discussion](https://github.com/AIMLDS7/Weather-Station-Data-Pipeline-Interactive-Analytics-Dashboard/discussions) or raise an [Issue](https://github.com/AIMLDS7/Weather-Station-Data-Pipeline-Interactive-Analytics-Dashboard/issues).
+
+Pull requests that improve the documentation, fix bugs in the illustrative notebooks, or add new export formats are welcome.
 
 ---
 
@@ -247,18 +289,6 @@ It can be shared on request for:
 
 Please reach out via **[GitHub](https://github.com/AIMLDS7)** or email.
 
----
-
-## 🗺️ Roadmap
-
-- [ ] Scheduled, automated FTP sync (cron / Task Scheduler) with retry handling
-- [ ] Migrate from flat-file storage to a time-series database backend
-- [ ] Sensor dropout / anomaly alerting (email or webhook notifications)
-- [ ] Lightweight REST API to serve aggregated, anonymized metrics
-- [ ] Dockerized deployment for reproducible environments
-- [ ] Integration with downstream PV-BESS performance and price-forecasting models
-
----
 
 ## 👤 Author
 
@@ -268,11 +298,17 @@ Energy Systems Modelling · BESS Analytics · EPC Commercial Management
 
 - GitHub: [@AIMLDS7](https://github.com/AIMLDS7)
 - Portfolio: [aimlds7.github.io](https://aimlds7.github.io)
-- Digital Business Card: [aimlds7.github.io/links](https://aimlds7.github.io/links)
 
 ---
 
 ## 📄 License
 
 This repository (documentation, structure, and visual assets) is shared for portfolio and demonstration purposes. The underlying implementation is proprietary — see [Code Availability](#-code-availability) for licensing and collaboration inquiries.
+
+
+<div align="center">
+  <sub>Built with pvlib · plotly · ipywidgets · kaleido · pandas</sub>
+</div>
+
+---
 
